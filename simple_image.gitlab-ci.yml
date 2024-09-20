@@ -7,6 +7,7 @@ variables:
 stages:
   - build
   - deploy dev
+  - deploy prod
 
 build:
   stage: build
@@ -30,8 +31,24 @@ deploy dev:
         --token $ARGOCD_COMMITTER_TOKEN \
         --project-id 614 \
         --branch master \
-        --file $FILE \
+        --file $FILE_DEV \
         --content "image: $IMAGE" \
         --committer-email "pss-ci-bot@gitlab.sikalabs.io" \
         --committer-name "[bot] pss-ci-bot" \
-        --commit-message "[auto] feat: Update image using CI in $FILE"
+        --commit-message "[auto] feat: Update image using CI in $FILE_DEV"
+
+deploy prod:
+  stage: deploy prod
+  when: manual
+  script:
+    - |
+      slr gitlab-update-file \
+        --gitlab-url https://gitlab.sikalabs.com \
+        --token $ARGOCD_COMMITTER_TOKEN \
+        --project-id 614 \
+        --branch master \
+        --file $FILE_PROD \
+        --content "image: $IMAGE" \
+        --committer-email "pss-ci-bot@gitlab.sikalabs.io" \
+        --committer-name "[bot] pss-ci-bot" \
+        --commit-message "[auto] feat: Update image using CI in $FILE_PROD"
