@@ -1,3 +1,11 @@
+# Required VARIABLES:
+#
+# - ARGOCD_COMMITTER_TOKEN
+# - ARGOCD_APPS_PROJECT_ID
+# - ARGOCD_APPS_BRANCH
+# - IMAGE_VALUES_FILE_DEV
+# - IMAGE_VALUES_FILE_PROD
+
 image: sikalabs/ci
 
 variables:
@@ -29,13 +37,13 @@ deploy dev:
       slr gitlab-update-file \
         --gitlab-url https://gitlab.sikalabs.com \
         --token $ARGOCD_COMMITTER_TOKEN \
-        --project-id 614 \
-        --branch master \
-        --file $FILE_DEV \
+        --project-id $ARGOCD_APPS_PROJECT_ID \
+        --branch $ARGOCD_APPS_BRANCH \
+        --file $IMAGE_VALUES_FILE_DEV \
         --content "image: $IMAGE" \
         --committer-email "pss-ci-bot@gitlab.sikalabs.io" \
         --committer-name "[bot] pss-ci-bot" \
-        --commit-message "[auto] feat: Update image using CI in $FILE_DEV"
+        --commit-message "[auto] feat: Update image using CI in $IMAGE_VALUES_FILE_DEV"
 
 deploy prod:
   stage: deploy prod
@@ -45,10 +53,10 @@ deploy prod:
       slr gitlab-update-file \
         --gitlab-url https://gitlab.sikalabs.com \
         --token $ARGOCD_COMMITTER_TOKEN \
-        --project-id 614 \
-        --branch master \
-        --file $FILE_PROD \
+        --project-id $ARGOCD_APPS_PROJECT_ID \
+        --branch $ARGOCD_APPS_BRANCH \
+        --file $IMAGE_VALUES_FILE_PROD \
         --content "image: $IMAGE" \
         --committer-email "pss-ci-bot@gitlab.sikalabs.io" \
         --committer-name "[bot] pss-ci-bot" \
-        --commit-message "[auto] feat: Update image using CI in $FILE_PROD"
+        --commit-message "[auto] feat: Update image using CI in $IMAGE_VALUES_FILE_PROD"
